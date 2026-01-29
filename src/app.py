@@ -121,6 +121,17 @@ def  login_submit():
     finally:
         conn.close()
         
+@app.route('/healthz')
+def healthz():
+    try:
+        # Verifica la conexión a la base de datos
+        con = get_conn()
+        cursor = con.cursor()
+        cursor.execute('SELECT 1')
+        return {'status': 'ok', 'database': 'connected'}, 200
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}, 503
+        
 @app.route('/dashboard')
 def dashboard():
     if 'user_id' not in session:
